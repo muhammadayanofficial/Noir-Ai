@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c0d0f">
+  <title>NoirFlow Studio OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body data-initial-view="{{ current_view }}">
+<div class="app-shell">
+  <aside class="rail" aria-label="Main navigation">
+    <button class="brand-mark" data-nav="overview" aria-label="NoirFlow home"><span>N</span><i></i></button>
+    <div class="rail-rule"></div>
+    <nav class="rail-nav">
+      <button class="rail-link {% if current_view == 'overview' %}active{% endif %}" data-nav="overview" title="Overview" aria-label="Overview">
+        <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg><span class="rail-tooltip">Overview</span>
+      </button>
+      <button class="rail-link {% if current_view == 'projects' %}active{% endif %}" data-nav="projects" title="Projects" aria-label="Projects">
+        <svg viewBox="0 0 24 24"><path d="M3.5 7.5h6l2 2h9v9a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/><path d="M3.5 7.5v-2a2 2 0 0 1 2-2h4l2 2h5"/></svg><span class="rail-tooltip">Projects</span>
+      </button>
+      <button class="rail-link {% if current_view == 'tasks' %}active{% endif %}" data-nav="tasks" title="Tasks" aria-label="Tasks">
+        <svg viewBox="0 0 24 24"><path d="M9 5h11M9 12h11M9 19h11"/><path d="m3 5 1.4 1.4L6.8 4M3 12l1.4 1.4L6.8 11M3 19l1.4 1.4L6.8 18"/></svg><span class="rail-tooltip">Tasks</span>
+      </button>
+      <button class="rail-link {% if current_view == 'calendar' %}active{% endif %}" data-nav="calendar" title="Calendar" aria-label="Calendar">
+        <svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M7.5 3v4M16.5 3v4M3.5 10h17M8 14h.01M12 14h.01M16 14h.01M8 17.5h.01M12 17.5h.01"/></svg><span class="rail-tooltip">Calendar</span>
+      </button>
+      <button class="rail-link {% if current_view == 'focus' %}active{% endif %}" data-nav="focus" title="Focus" aria-label="Focus">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2M12 2v2M22 12h-2"/></svg><span class="rail-tooltip">Focus</span>
+      </button>
+      <button class="rail-link {% if current_view == 'notes' %}active{% endif %}" data-nav="notes" title="Notes" aria-label="Notes">
+        <svg viewBox="0 0 24 24"><path d="M5 3.5h10l4 4V21H5z"/><path d="M14.5 3.5V8H19M8.5 12h7M8.5 16h7"/></svg><span class="rail-tooltip">Notes</span>
+      </button>
+      <button class="rail-link {% if current_view == 'clients' %}active{% endif %}" data-nav="clients" title="Clients" aria-label="Clients">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 5.5a3 3 0 0 1 0 5.8M18 14a5 5 0 0 1 3.5 4.8"/></svg><span class="rail-tooltip">Clients</span>
+      </button>
+    </nav>
+    <div class="rail-bottom">
+      <span class="rail-live" title="Local workspace is ready"></span>
+      <span class="rail-avatar" title="Studio workspace">S</span>
+    </div>
+  </aside>
+
+  <div class="main-shell">
+    <header class="topbar">
+      <div class="crumbs"><span>NOIRFLOW</span><span class="crumb-slash">/</span><strong id="crumbCurrent">Overview</strong></div>
+      <div class="topbar-right">
+        <div class="local-status"><span class="status-dot"></span><span>Studio workspace</span><span class="status-divider"></span><span>Private</span></div>
+        <button class="topbar-add" data-open-modal="taskModal"><span>+</span> New task</button>
+      </div>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}<div class="flash-stack" role="status">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}<button type="button" aria-label="Dismiss" onclick="this.parentElement.remove()">×</button></div>{% endfor %}</div>{% endif %}
+    {% endwith %}
+
+    <main class="main-content">
+      <section class="page-view {% if current_view == 'overview' %}view-active{% endif %}" data-view="overview">
+        <div class="welcome-row">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> YOUR STUDIO, IN RHYTHM</div>
+            <h1>Make room for <em>deep work.</em></h1>
+            <p class="subhead">A little more intention. A little less noise.</p>
+          </div>
+          <div class="date-ornament"><span class="date-day">{{ today.strftime('%d') }}</span><span class="date-meta"><b>{{ today.strftime('%B') }}</b><small>{{ today.strftime('%A') }} · {{ today.strftime('%Y') }}</small></span></div>
+        </div>
+
+        <div class="hero-strip">
+          <div class="hero-copy"><span class="hero-overline">THE STUDIO NOTE</span><p>Good work needs<br><i>room to become.</i></p><span class="hero-small">Choose what matters. Give it your best hour.</span></div>
+          <div class="hero-seal"><span>STAY</span><b>in</b><span>THE FLOW</span><i>✳</i></div>
+          <div class="hero-right"><span class="hero-overline">THIS WEEK</span><strong>{{ (focus_week // 60) }}<small>h</small> {{ (focus_week % 60) }}<small>m</small></strong><span class="hero-small">of logged focus time</span><button class="text-link" data-nav="focus">Protect your focus <span>↗</span></button></div>
+        </div>
+
+        <div class="metric-strip">
+          <div class="metric"><span class="metric-label">ACTIVE PROJECTS</span><div class="metric-value">{{ '%02d'|format(stats.active_projects) }}<span class="metric-glyph">↗</span></div><span class="metric-foot">Things in motion</span></div>
+          <div class="metric"><span class="metric-label">OPEN TASKS</span><div class="metric-value">{{ '%02d'|format(stats.open_tasks) }}<span class="metric-glyph gold">◌</span></div><span class="metric-foot">Across all projects</span></div>
+          <div class="metric"><span class="metric-label">COMPLETED</span><div class="metric-value">{{ '%02d'|format(stats.done_tasks) }}<span class="metric-glyph green">✓</span></div><span class="metric-foot">Small wins add up</span></div>
+          <div class="metric"><span class="metric-label">PAST DUE</span><div class="metric-value">{{ '%02d'|format(stats.overdue_tasks) }}<span class="metric-glyph red">!</span></div><span class="metric-foot">Worth a quick look</span></div>
+        </div>
+
+        <div class="overview-grid">
+          <div class="overview-main">
+            <div class="section-heading"><div><span class="section-overline">IN MOTION</span><h2>The task board<span class="heading-period">.</span></h2></div><button class="quiet-link" data-nav="tasks">Open full board <span>↗</span></button></div>
+            <div class="kanban-board">
+              {% set columns = [('todo','To do','tasks-pending'),('in_progress','In progress','tasks-doing'),('done','Completed','tasks-done')] %}
+              {% for status, label, column_key in columns %}
+                <div class="kanban-column" data-drop-status="{{ status }}">
+                  <div class="kanban-head"><span class="column-dot {{ status }}"></span><span>{{ label }}</span><b>{{ tasks|selectattr('status','equalto',status)|list|length }}</b><button class="column-menu" type="button" title="Add task" data-open-modal="taskModal">+</button></div>
+                  <div class="task-stack">
+                    {% for task in tasks if task.status == status %}
+                      {% if loop.index <= 3 %}
+                      <article class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                        <div class="task-card-top"><span class="priority-mark {{ task.priority|lower }}"></span><span>{{ task.priority }}</span><button class="task-more" type="button" title="Delete task" data-delete-task="{{ task.id }}">···</button></div>
+                        <h3>{{ task.title }}</h3>
+                        <p>{{ task.project_name or 'Personal workspace' }}</p>
+                        <div class="task-card-foot"><span class="project-mini-dot" style="--project-color:{{ task.project_color or '#8b8f9d' }}"></span><time class="due-label {% if task.due_date and task.due_date < today.isoformat() and task.status != 'done' %}overdue{% endif %}">{{ task.due_date or 'No due date' }}</time><span class="task-grab">⠿</span></div>
+                      </article>
+                      {% endif %}
+                    {% endfor %}
+                    {% if tasks|selectattr('status','equalto',status)|list|length == 0 %}<div class="kanban-empty">Drop a task here</div>{% endif %}
+                  </div>
+                  {% if tasks|selectattr('status','equalto',status)|list|length > 3 %}<button class="show-more" data-nav="tasks">+ {{ tasks|selectattr('status','equalto',status)|list|length - 3 }} more tasks</button>{% endif %}
+                </div>
+              {% endfor %}
+            </div>
+
+            <div class="section-heading projects-heading"><div><span class="section-overline">THE BIG PICTURE</span><h2>Projects in focus<span class="heading-period">.</span></h2></div><button class="quiet-link" data-nav="projects">All projects <span>↗</span></button></div>
+            <div class="project-spotlight-list">
+              {% for project in projects if project.status != 'Completed' %}
+                <article class="project-spotlight" style="--project-color:{{ project.color }}">
+                  <div class="project-spotlight-marker"></div>
+                  <div class="project-spotlight-main"><div class="project-spotlight-title"><h3>{{ project.name }}</h3><span class="status-tag {{ project.status|lower|replace(' ','-') }}">{{ project.status }}</span></div><p>{{ project.description or 'No project notes yet.' }}</p><div class="progress-track"><span style="width:{{ project.progress }}%"></span></div><div class="progress-caption"><span>{{ project.completed_count }} of {{ project.task_count }} tasks</span><span>{{ project.progress }}%</span></div></div>
+                  <div class="project-spotlight-side"><span class="project-due-kicker">DUE DATE</span><b>{{ project.due_date or 'Not set' }}</b><span class="project-client">{{ project.client_name or 'Personal project' }}</span></div>
+                </article>
+              {% else %}<div class="empty-inline">No active projects yet. <button class="text-link" data-open-modal="projectModal">Create one ↗</button></div>{% endfor %}
+            </div>
+          </div>
+
+          <aside class="overview-side">
+            <section class="focus-panel">
+              <div class="focus-panel-header"><span class="section-overline">A LITTLE SPACE</span><span class="focus-spark">✳</span></div>
+              <h2>Find your <em>focus.</em></h2><p>One thing at a time. Let the rest wait.</p>
+              <div class="timer-ring" id="timerRing"><div class="timer-inner"><span id="timerDisplay">25:00</span><small id="timerStatus">READY WHEN YOU ARE</small></div></div>
+              <div class="timer-presets"><button class="timer-preset active" data-minutes="25">25 min</button><button class="timer-preset" data-minutes="50">50 min</button><button class="timer-preset" data-minutes="90">90 min</button></div>
+              <label class="timer-project-label" for="focusProject">WORKING ON</label><select id="focusProject" class="dark-select"><option value="">Choose a project</option>{% for p in projects if p.status != 'Completed' %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}</select>
+              <div class="timer-buttons"><button id="timerStart" class="gold-button">Begin session <span>↗</span></button><button id="timerReset" class="ghost-button" type="button" aria-label="Reset timer">↺</button></div>
+              <div class="timer-foot"><span><span class="status-dot"></span> {{ (focus_today // 60) }}h {{ (focus_today % 60) }}m focused today</span><button class="text-link" data-nav="focus">View log</button></div>
+            </section>
+
+            <section class="side-note-panel"><div class="side-note-heading"><span class="section-overline">FROM THE NOTEBOOK</span><button class="tiny-plus" type="button" data-open-modal="noteModal" aria-label="Add note">+</button></div>
+              {% if notes %}<span class="note-tag">{{ notes[0].tag }}</span><h3>{{ notes[0].title }}</h3><p>{{ notes[0].body[:150] }}{% if notes[0].body|length > 150 %}…{% endif %}</p><button class="quiet-link" data-nav="notes">Open notebook <span>↗</span></button>{% else %}<p>Your next good idea goes here.</p><button class="quiet-link" data-open-modal="noteModal">Write a note <span>↗</span></button>{% endif %}
+            </section>
+
+            <section class="upcoming-panel"><div class="side-note-heading"><span class="section-overline">UP NEXT</span><button class="tiny-plus" type="button" data-nav="calendar">↗</button></div>
+              {% for task in due_soon[:4] %}<div class="upcoming-item"><span class="upcoming-line" style="--project-color:{{ task.project_color or '#d5b77b' }}"></span><div><b>{{ task.title }}</b><small>{{ task.project_name or 'Personal' }} · {{ task.due_date }}</small></div></div>{% else %}<p class="muted-small">No deadlines in the next seven days. Keep that breathing room.</p>{% endfor %}
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section class="page-view {% if current_view == 'projects' %}view-active{% endif %}" data-view="projects">
+        <div class="page-title-row"><div><div class="eyebrow"><span class="eyebrow-line"></span> MAKE THE WORK MATTER</div><h1>Your <em>projects.</em></h1><p class="subhead">Big ideas, broken into work you can actually move.</p></div><button class="gold-button page-action" data-open-modal="projectModal">+ New project</button></div>
+        <div class="project-toolbar"><span>{{ projects|length }} projects in your studio</span><span class="toolbar-note"><i class="status-dot"></i> All data saved locally</span></div>
+        <div class="project-grid">
+          {% for project in projects %}
+          <article class="project-card" style="--project-color:{{ project.color }}">
+            <div class="project-card-top"><span class="project-number">NO. {{ '%02d'|format(loop.index) }}</span><span class="status-tag {{ project.status|lower|replace(' ','-') }}">{{ project.status }}</span></div>
+            <div class="project-art"><span class="project-art-ring"></span><span class="project-art-word">{{ project.name[:1]|upper }}</span><span class="project-art-line"></span></div>
+            <div class="project-card-body"><div class="project-card-kicker">{{ project.client_name or 'INDEPENDENT WORK' }}</div><h2>{{ project.name }}</h2><p>{{ project.description or 'A project with room to grow.' }}</p>
+              <div class="project-stats"><div><small>PROGRESS</small><b>{{ project.progress }}%</b></div><div><small>TASKS</small><b>{{ project.completed_count }}/{{ project.task_count }}</b></div><div><small>DUE</small><b>{{ project.due_date or '—' }}</b></div></div>
+              <div class="progress-track wide"><span style="width:{{ project.progress }}%"></span></div>
+              <div class="project-card-actions"><button class="outline-button" data-plan-project="{{ project.id }}">Plan with AI <span>✳</span></button><form method="post" action="{{ url_for('update_project_status', project_id=project.id) }}"><select name="status" aria-label="Project status" onchange="this.form.submit()" class="small-select">{% for s in ['Active','On hold','Completed'] %}<option value="{{ s }}" {% if s == project.status %}selected{% endif %}>{{ s }}</option>{% endfor %}</select></form><form method="post" action="{{ url_for('delete_project', project_id=project.id) }}" onsubmit="return confirm('Delete this project? Tasks will remain and become unassigned.')"><button class="icon-button" type="submit" title="Delete project">×</button></form></div>
+            </div>
+          </article>
+          {% else %}<div class="empty-state"><h2>Start with one good idea.</h2><p>Your first project will give this space a shape.</p><button class="gold-button" data-open-modal="projectModal">Create a project</button></div>{% endfor %}
+        </div>
+        <section class="ai-planner-panel" id="ai-planner-panel"><div class="ai-planner-title"><div class="ai-star">✳</div><div><span class="section-overline">OPTIONAL GEMINI ASSISTANT</span><h2>Give a project its <em>next steps.</em></h2><p>Ask for a milestone plan, task breakdown, dependencies and risks.</p></div></div><div class="ai-planner-controls"><select id="plannerProject" class="dark-select"><option value="">Choose a project</option>{% for p in projects %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}</select><textarea id="plannerGoal" placeholder="What needs to be achieved? (optional)"></textarea><button id="generatePlan" class="gold-button">Build a plan <span>↗</span></button></div><div id="aiResult" class="ai-result" hidden aria-live="polite"></div></section>
+      </section>
+
+      <section class="page-view {% if current_view == 'tasks' %}view-active{% endif %}" data-view="tasks">
+        <div class="page-title-row"><div><div class="eyebrow"><span class="eyebrow-line"></span> SMALL STEPS, REAL MOMENTUM</div><h1>The <em>task room.</em></h1><p class="subhead">Drag tasks between stages, or change their status in the list.</p></div><div class="title-actions"><a class="outline-button" href="{{ url_for('export_tasks') }}">Export CSV ↗</a><button class="gold-button" data-open-modal="taskModal">+ New task</button></div></div>
+        <div class="task-toolbar"><label class="search-box"><span>⌕</span><input id="taskSearch" type="search" placeholder="Find a task or project…"></label><select id="priorityFilter" class="dark-select"><option value="">All priorities</option>{% for pr in ['Urgent','High','Normal','Low'] %}<option>{{ pr }}</option>{% endfor %}</select><span class="toolbar-note">{{ tasks|length }} total tasks</span></div>
+        <div class="task-list-wrap"><table class="task-table"><thead><tr><th>Task</th><th>Project</th><th>Priority</th><th>Due date</th><th>Status</th><th></th></tr></thead><tbody id="taskTableBody">{% for task in tasks %}<tr data-task-row data-search="{{ (task.title ~ ' ' ~ (task.project_name or ''))|lower }}" data-priority="{{ task.priority }}"><td><span class="table-task-title"><span class="task-check {% if task.status == 'done' %}checked{% endif %}">{% if task.status == 'done' %}✓{% endif %}</span><span>{{ task.title }}<small>{{ task.description or 'No description' }}</small></span></span></td><td><span class="table-project"><i style="--project-color:{{ task.project_color or '#8b8f9d' }}"></i>{{ task.project_name or 'Personal' }}</span></td><td><span class="priority-pill {{ task.priority|lower }}">{{ task.priority }}</span></td><td><span class="due-label {% if task.due_date and task.due_date < today.isoformat() and task.status != 'done' %}overdue{% endif %}">{{ task.due_date or '—' }}</span></td><td><select class="status-select" data-status-task="{{ task.id }}" aria-label="Status for {{ task.title }}"><option value="todo" {% if task.status == 'todo' %}selected{% endif %}>To do</option><option value="in_progress" {% if task.status == 'in_progress' %}selected{% endif %}>In progress</option><option value="done" {% if task.status == 'done' %}selected{% endif %}>Completed</option></select></td><td><form method="post" action="{{ url_for('delete_task', task_id=task.id) }}" onsubmit="return confirm('Delete this task?')"><button class="icon-button" type="submit" title="Delete task">×</button></form></td></tr>{% else %}<tr><td colspan="6" class="empty-table">Your task list is a blank canvas. Add the first task.</td></tr>{% endfor %}</tbody></table></div>
+        <div class="list-footer"><span>Task changes save to your local SQLite workspace.</span><span>Read carefully. Ship thoughtfully.</span></div>
+      </section>
+
+      <section class="page-view {% if current_view == 'calendar' %}view-active{% endif %}" data-view="calendar">
+        <div class="page-title-row"><div><div class="eyebrow"><span class="eyebrow-line"></span> KEEP THE IMPORTANT VISIBLE</div><h1>Time, <em>in view.</em></h1><p class="subhead">Upcoming deadlines for projects and tasks.</p></div><button class="gold-button" data-open-modal="taskModal">+ Add a deadline</button></div>
+        <div class="calendar-layout"><section class="calendar-box"><div class="calendar-top"><button class="calendar-arrow" id="monthPrev" aria-label="Previous month">←</button><div><span class="section-overline">THE MONTH AHEAD</span><h2 id="calendarMonth"></h2></div><button class="calendar-arrow" id="monthNext" aria-label="Next month">→</button></div><div class="calendar-grid" id="calendarGrid"></div><div class="calendar-legend"><span><i class="calendar-key task-key"></i> Task deadline</span><span><i class="calendar-key project-key"></i> Project deadline</span></div></section><section class="deadline-box"><div class="section-heading compact"><div><span class="section-overline">ON THE HORIZON</span><h2>Upcoming dates<span class="heading-period">.</span></h2></div></div><div class="deadline-list">{% set deadlines = [] %}{% for task in tasks if task.due_date %}{% set _ = deadlines.append({'kind':'task','date':task.due_date,'title':task.title,'sub':task.project_name or 'Personal task','status':task.status}) %}{% endfor %}{% for project in projects if project.due_date %}{% set _ = deadlines.append({'kind':'project','date':project.due_date,'title':project.name,'sub':project.client_name or 'Independent work','status':project.status}) %}{% endfor %}{% for item in deadlines|sort(attribute='date') %}<article class="deadline-item" data-date="{{ item.date }}" data-kind="{{ item.kind }}"><div class="deadline-date"><b>{{ item.date[-2:] }}</b><small>{{ item.date[:7] }}</small></div><div class="deadline-copy"><b>{{ item.title }}</b><small>{{ item.sub }}</small></div><span class="deadline-kind {{ item.kind }}">{{ item.kind }}</span></article>{% else %}<p class="muted-small">No dates added yet.</p>{% endfor %}</div></section></div>
+      </section>
+
+      <section class="page-view {% if current_view == 'focus' %}view-active{% endif %}" data-view="focus">
+        <div class="page-title-row"><div><div class="eyebrow"><span class="eyebrow-line"></span> PROTECT YOUR ATTENTION</div><h1>Enter the <em>quiet.</em></h1><p class="subhead">A small boundary around your best work.</p></div></div>
+        <div class="focus-page-grid"><section class="focus-large"><span class="section-overline">DEEP WORK TIMER</span><h2>One thing. <em>For a while.</em></h2><p>Select a rhythm, choose what you're working on, and begin.</p><div class="timer-ring large" id="timerRingLarge"><div class="timer-inner"><span id="timerDisplayLarge">25:00</span><small id="timerStatusLarge">READY WHEN YOU ARE</small></div></div><div class="timer-presets large-presets"><button class="timer-preset active" data-minutes="25">25 minutes</button><button class="timer-preset" data-minutes="50">50 minutes</button><button class="timer-preset" data-minutes="90">90 minutes</button></div><div class="focus-controls"><select id="focusProjectLarge" class="dark-select"><option value="">Independent focus</option>{% for p in projects if p.status != 'Completed' %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}</select><input id="focusNote" class="dark-input" placeholder="What are you focusing on?" maxlength="300"><div class="timer-buttons"><button id="timerStartLarge" class="gold-button">Begin session <span>↗</span></button><button id="timerResetLarge" class="ghost-button" aria-label="Reset timer">↺</button></div></div></section><aside class="focus-stats"><div class="focus-stat-card"><span class="section-overline">TODAY'S FOCUS</span><strong>{{ focus_today }}<small> min</small></strong><p>One honest session is a start.</p></div><div class="focus-stat-card accent"><span class="section-overline">LAST 7 DAYS</span><strong>{{ (focus_week // 60) }}<small> h</small> {{ (focus_week % 60) }}<small> m</small></strong><p>Attention compounds over time.</p></div><div class="sessions-card"><div class="section-heading compact"><div><span class="section-overline">RECENT SESSIONS</span><h2>Little by little<span class="heading-period">.</span></h2></div></div>{% for s in focus_sessions %}<div class="session-line"><span class="session-dot"></span><div><b>{{ s.note or 'Deep work' }}</b><small>{{ s.project_name or 'Independent focus' }} · {{ s.completed_at[:16] }}</small></div><strong>{{ s.duration_minutes }}m</strong></div>{% else %}<p class="muted-small">Your completed sessions will show up here.</p>{% endfor %}</div></aside></div>
+      </section>
+
+      <section class="page-view {% if current_view == 'notes' %}view-active{% endif %}" data-view="notes">
+        <div class="page-title-row"><div><div class="eyebrow"><span class="eyebrow-line"></span> KEEP THE GOOD THOUGHTS</div><h1>The <em>notebook.</em></h1><p class="subhead">Ideas, reminders and scraps worth holding on to.</p></div><button class="gold-button" data-open-modal="noteModal">+ New note</button></div>
+        <div class="notes-layout"><section class="notes-collection"><div class="notes-collection-head"><span class="section-overline">YOUR THOUGHTS</span><span>{{ notes|length }} notes</span></div><div class="notes-grid">{% for note in notes %}<article class="note-card"><div class="note-card-top"><span class="note-tag">{{ note.tag }}</span><form method="post" action="{{ url_for('delete_note', note_id=note.id) }}" onsubmit="return confirm('Delete this note?')"><button class="icon-button" type="submit" title="Delete note">×</button></form></div><h2>{{ note.title }}</h2><p>{{ note.body }}</p><div class="note-date">SAVED {{ note.created_at[:10] if note.created_at else 'JUST NOW' }}</div></article>{% else %}<div class="empty-state"><h2>Leave yourself a note.</h2><p>Capture a thought before it disappears.</p></div>{% endfor %}</div></section><aside class="note-create-side"><span class="section-overline">A QUICK CAPTURE</span><h2>Don't let it <em>slip.</em></h2><p>Keep the small sparks close to the work.</p><form method="post" action="{{ url_for('create_note') }}" class="stack-form"><label>Title<input name="title" required maxlength="160" placeholder="A thought worth keeping"></label><label>Category<select name="tag"><option>Studio note</option><option>Idea</option><option>Checklist</option><option>Client</option><option>Personal</option></select></label><label>Note<textarea name="body" rows="5" maxlength="6000" placeholder="Write it down…"></textarea></label><button class="gold-button" type="submit">Save note <span>↗</span></button></form></aside></div>
+      </section>
+
+      <section class="page-view {% if current_view == 'clients' %}view-active{% endif %}" data-view="clients">
+        <div class="page-title-row"><div><div class="eyebrow"><span class="eyebrow-line"></span> PEOPLE BEHIND THE WORK</div><h1>Good work is <em>shared.</em></h1><p class="subhead">A quiet, organized place for the people you build with.</p></div><button class="gold-button" data-open-modal="clientModal">+ Add client</button></div>
+        <div class="clients-layout"><section class="client-table-wrap"><div class="client-table-head"><span class="section-overline">YOUR PEOPLE</span><span>{{ clients|length }} contacts</span></div><table class="task-table client-table"><thead><tr><th>Contact</th><th>Company</th><th>Email</th><th>Projects</th><th></th></tr></thead><tbody>{% for client in clients %}<tr><td><span class="client-name-cell"><span class="client-avatar">{{ client.name[:1]|upper }}</span><b>{{ client.name }}</b></span></td><td>{{ client.company or 'Independent' }}</td><td>{{ client.email or '—' }}</td><td>{% set client_projects = projects|selectattr('client_id','equalto',client.id)|list %}<span class="client-project-count">{{ client_projects|length }} linked</span></td><td><form method="post" action="{{ url_for('delete_client', client_id=client.id) }}" onsubmit="return confirm('Remove this client? Their projects will become independent.')"><button class="icon-button" type="submit" title="Remove client">×</button></form></td></tr>{% else %}<tr><td colspan="5" class="empty-table">No clients yet. Add your first contact.</td></tr>{% endfor %}</tbody></table></section><aside class="client-aside"><span class="section-overline">GOOD RELATIONSHIPS</span><h2>Better work,<br><em>better together.</em></h2><p>Keep the person, the project and the next conversation in view.</p><div class="client-aside-foot"><span class="client-asterisk">✳</span><span>A studio practice, not a spreadsheet.</span></div></aside></div>
+      </section>
+    </main>
+    <footer class="app-footer"><span><span class="footer-mark">N</span> NOIRFLOW <span class="footer-muted">STUDIO OS</span></span><span>Local-first by design <i></i> Built for considered work</span></footer>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="projectModal" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle"><div class="modal-head"><div><span class="section-overline">MAKE SOMETHING REAL</span><h2 id="projectModalTitle">A new <em>project.</em></h2></div><button class="modal-close" data-close-modal aria-label="Close">×</button></div><form method="post" action="{{ url_for('create_project') }}" class="stack-form"><label>Project name<input name="name" required maxlength="120" placeholder="e.g. Spring campaign"></label><div class="form-two"><label>Client<select name="client_id"><option value="">Independent project</option>{% for c in clients %}<option value="{{ c.id }}">{{ c.name }}{% if c.company %} · {{ c.company }}{% endif %}</option>{% endfor %}</select></label><label>Priority<select name="priority">{% for pr in ['Normal','Low','High','Urgent'] %}<option>{{ pr }}</option>{% endfor %}</select></label></div><div class="form-two"><label>Due date<input type="date" name="due_date"></label><label>Budget / value<input type="number" name="budget" min="0" step="0.01" placeholder="0.00"></label></div><label>Color identity<select name="color"><option value="#d5b77b">Champagne</option><option value="#7db6a0">Sage</option><option value="#9c91d9">Lavender</option><option value="#d98c7b">Terracotta</option><option value="#8fa9d6">Blue grey</option></select></label><label>Project intention<textarea name="description" rows="3" maxlength="2000" placeholder="What are you trying to make, and why?"></textarea></label><div class="modal-actions"><button class="ghost-button" type="button" data-close-modal>Cancel</button><button class="gold-button" type="submit">Create project <span>↗</span></button></div></form></section></div>
+
+<div class="modal-backdrop" id="taskModal" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="taskModalTitle"><div class="modal-head"><div><span class="section-overline">ONE STEP FORWARD</span><h2 id="taskModalTitle">Add a <em>task.</em></h2></div><button class="modal-close" data-close-modal aria-label="Close">×</button></div><form method="post" action="{{ url_for('create_task') }}" class="stack-form"><label>What needs doing?<input name="title" required maxlength="180" placeholder="Write it as an action"></label><label>Project<select name="project_id"><option value="">Personal / unassigned</option>{% for p in projects if p.status != 'Completed' %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}</select></label><div class="form-two"><label>Priority<select name="priority">{% for pr in ['Normal','Low','High','Urgent'] %}<option>{{ pr }}</option>{% endfor %}</select></label><label>Due date<input type="date" name="due_date"></label></div><label>Details<textarea name="description" rows="3" maxlength="2000" placeholder="Optional context or acceptance criteria"></textarea></label><div class="modal-actions"><button class="ghost-button" type="button" data-close-modal>Cancel</button><button class="gold-button" type="submit">Add task <span>↗</span></button></div></form></section></div>
+
+<div class="modal-backdrop" id="clientModal" hidden><section class="modal compact-modal" role="dialog" aria-modal="true" aria-labelledby="clientModalTitle"><div class="modal-head"><div><span class="section-overline">GOOD PEOPLE, GOOD WORK</span><h2 id="clientModalTitle">Add a <em>client.</em></h2></div><button class="modal-close" data-close-modal aria-label="Close">×</button></div><form method="post" action="{{ url_for('create_client') }}" class="stack-form"><label>Contact name<input name="name" required maxlength="120" placeholder="Full name"></label><label>Company<input name="company" maxlength="160" placeholder="Studio or company"></label><label>Email<input name="email" type="email" maxlength="180" placeholder="name@example.com"></label><div class="modal-actions"><button class="ghost-button" type="button" data-close-modal>Cancel</button><button class="gold-button" type="submit">Save contact <span>↗</span></button></div></form></section></div>
+
+<div class="modal-backdrop" id="noteModal" hidden><section class="modal compact-modal" role="dialog" aria-modal="true" aria-labelledby="noteModalTitle"><div class="modal-head"><div><span class="section-overline">CAPTURE THE SPARK</span><h2 id="noteModalTitle">A quick <em>note.</em></h2></div><button class="modal-close" data-close-modal aria-label="Close">×</button></div><form method="post" action="{{ url_for('create_note') }}" class="stack-form"><label>Title<input name="title" required maxlength="160" placeholder="A thought worth keeping"></label><label>Category<select name="tag"><option>Studio note</option><option>Idea</option><option>Checklist</option><option>Client</option><option>Personal</option></select></label><label>Note<textarea name="body" rows="5" maxlength="6000" placeholder="Write it down…"></textarea></label><div class="modal-actions"><button class="ghost-button" type="button" data-close-modal>Cancel</button><button class="gold-button" type="submit">Save note <span>↗</span></button></div></form></section></div>
+
+<div class="toast-region" id="toastRegion" role="status" aria-live="polite"></div>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
